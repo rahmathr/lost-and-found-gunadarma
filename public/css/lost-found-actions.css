@@ -1,0 +1,255 @@
+/*
+ * Lost & Found Gunadarma — shared action/button system.
+ * Phase 1: button geometry, interaction states, and semantic action colors.
+ * Intentionally scoped to content surfaces and known public/auth action classes.
+ */
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    button,
+    a.button,
+    a.primary,
+    a.secondary,
+    a.danger,
+    a.outline,
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-delete,
+    .primary,
+    .secondary,
+    .danger,
+    .outline,
+    .sa-btn,
+    .sa-btn-primary,
+    .sa-btn-secondary,
+    .sa-btn-danger,
+    .satpam-btn,
+    .satpam-btn-primary,
+    .satpam-btn-danger,
+    .satpam-btn-warning,
+    .satpam-form-button,
+    .claim-action-btn,
+    .claim-action-primary,
+    .claim-action-warning,
+    .claim-action-danger,
+    .claim-review-btn,
+    .action-link,
+    .action-button,
+    .action-secondary,
+    .primary-button,
+    .button-primary,
+    .button-secondary,
+    .submit-button,
+    .register-button,
+    .search-button,
+    .detail-button,
+    .detail-barang-action,
+    .sa-dashboard-btn-detail,
+    .sa-admin-add,
+    .kampus-detail-back,
+    .home-primary,
+    .home-secondary
+) {
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 7px !important;
+    min-height: 40px !important;
+    padding: 9px 15px !important;
+    border-radius: 7px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    vertical-align: middle !important;
+    cursor: pointer;
+    transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease;
+}
+
+/* Aksi ringkas di dalam tabel/kartu tetap ringkas, tetapi geometri dan radius sama. */
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    .action-link,
+    .action-button,
+    .action-secondary,
+    .claim-action-btn,
+    .claim-review-btn,
+    .detail-button,
+    .detail-barang-action,
+    .sa-dashboard-btn-detail,
+    .kampus-detail-back
+) {
+    min-height: 36px !important;
+    padding: 7px 12px !important;
+    font-size: 13px !important;
+}
+
+/* Aksi utama: satu ungu Gunadarma untuk semua peran. */
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    button:not(.btn-delete):not(.danger):not(.sa-btn-danger):not(.satpam-btn-danger):not(.claim-action-danger):not(.secondary):not(.btn-secondary):not(.sa-btn-secondary),
+    a.primary,
+    .btn-primary,
+    .primary,
+    .sa-btn-primary,
+    .satpam-btn-primary,
+    .claim-action-primary,
+    .primary-button,
+    .button-primary
+) {
+    background-color: #4b2d73 !important;
+    border: 1px solid #4b2d73 !important;
+    color: #fff !important;
+}
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    button:not(.btn-delete):not(.danger):not(.sa-btn-danger):not(.satpam-btn-danger):not(.claim-action-danger):not(.secondary):not(.btn-secondary):not(.sa-btn-secondary),
+    a.primary,
+    .btn-primary,
+    .primary,
+    .sa-btn-primary,
+    .satpam-btn-primary,
+    .claim-action-primary,
+    .primary-button,
+    .button-primary
+):hover:not(:disabled) {
+    background-color: #62408b !important;
+    border: 1px solid #62408b !important;
+    color: #fff !important;
+}
+
+/* Aksi sekunder. */
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    a.secondary,
+    .secondary,
+    .btn-secondary,
+    .sa-btn-secondary,
+    .button-secondary,
+    .action-secondary
+) {
+    background-color: #f1edf5 !important;
+    border: 1px solid #e2d9eb !important;
+    color: #49365e !important;
+}
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    a.secondary,
+    .secondary,
+    .btn-secondary,
+    .sa-btn-secondary,
+    .button-secondary,
+    .action-secondary
+):hover:not(:disabled) {
+    background-color: #e7dfef !important;
+    border-color: #d7c9e3 !important;
+    color: #392451 !important;
+}
+
+/* Aksi berbahaya/hapus: warna merah dipertahankan secara konsisten. */
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    .btn-delete,
+    .danger,
+    .sa-btn-danger,
+    .satpam-btn-danger,
+    .claim-action-danger
+) {
+    background-color: #b42318 !important;
+    border: 1px solid #b42318 !important;
+    color: #fff !important;
+}
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    .btn-delete,
+    .danger,
+    .sa-btn-danger,
+    .satpam-btn-danger,
+    .claim-action-danger
+):hover:not(:disabled) {
+    background-color: #941f16 !important;
+    border-color: #941f16 !important;
+    color: #fff !important;
+}
+
+/* Aksi peringatan tetap berbeda dari aksi utama dan aksi hapus. */
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    .satpam-btn-warning,
+    .claim-action-warning
+) {
+    background-color: #fff4db !important;
+    border: 1px solid #edcf91 !important;
+    color: #80520b !important;
+}
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) :is(
+    .satpam-btn-warning,
+    .claim-action-warning
+):hover:not(:disabled) {
+    background-color: #ffebc2 !important;
+    border-color: #dfbd78 !important;
+    color: #704500 !important;
+}
+
+/* Tombol pencarian dan filter yang tidak memakai kelas warna khusus. */
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) button:not([class]),
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) button[type="submit"]:not([class]) {
+    border: 1px solid #4b2d73;
+    background-color: #4b2d73;
+    color: #fff;
+}
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) button:focus-visible,
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) a:is(.button, .primary, .secondary, .danger, .btn, .sa-btn, .satpam-btn, .action-link, .action-button):focus-visible {
+    outline: 3px solid rgba(112, 64, 165, .25);
+    outline-offset: 2px;
+}
+
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) button:disabled,
+:where(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface) a[aria-disabled="true"] {
+    opacity: .58;
+    cursor: not-allowed;
+}
+
+/* Public pages and authentication screens use standalone layouts. */
+:is(.navbar .register-button, .submit-button, .resend, .search-button, .detail-button, .home-primary, .home-secondary) {
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    padding: 9px 15px !important;
+    border-radius: 7px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    text-decoration: none !important;
+    text-align: center !important;
+}
+
+:is(.submit-button, .search-button, .home-primary) {
+    background-color: #4b2d73 !important;
+    border: 1px solid #4b2d73 !important;
+    color: #fff !important;
+}
+
+:is(.submit-button, .search-button, .home-primary):hover:not(:disabled) {
+    background-color: #62408b !important;
+    border: 1px solid #62408b !important;
+}
+
+:is(.resend, .home-secondary) {
+    background-color: #f1edf5 !important;
+    border: 1px solid #e2d9eb !important;
+    color: #49365e !important;
+}
+
+:is(.navbar .register-button, .detail-button) {
+    border: 1px solid #e2d9eb !important;
+}
+
+:is(.navbar .register-button, .detail-button):focus-visible,
+:is(.submit-button, .resend, .search-button, .home-primary, .home-secondary):focus-visible {
+    outline: 3px solid rgba(112, 64, 165, .25) !important;
+    outline-offset: 2px !important;
+}

@@ -1,0 +1,85 @@
+/*
+ * Lost & Found Gunadarma — standar universal badge/status.
+ * Bentuk dan tipografi diseragamkan; warna mengikuti makna status.
+ */
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(
+  .status,
+  .badge,
+  .claim-status,
+  .claim-status-badge,
+  .claim-current-status,
+  .kampus-detail-status
+) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  width: max-content !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 30px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  text-align: center !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  overflow: visible !important;
+}
+
+/* Warna status: satu arti, satu palet di semua peran dan halaman. */
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge, .claim-current-status, .kampus-detail-status).status-pending,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge).waiting,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).menunggu,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).is-pending {
+  background: #fff7df !important; border-color: #f2d98d !important; color: #805b12 !important;
+}
+
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge).status-approved,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge).approved,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).tervalidasi,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status-badge).is-done,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).published {
+  background: #eaf8ef !important; border-color: #b7e4c7 !important; color: #166534 !important;
+}
+
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge).status-rejected,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge).rejected,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).ditolak,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status-badge).is-rejected {
+  background: #fff0f0 !important; border-color: #f2c0c0 !important; color: #991b1b !important;
+}
+
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status, .claim-status-badge).status-other,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).checking,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).proses,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).ready,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).process,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status-badge).is-progress {
+  background: #f2eafa !important; border-color: #ddc6ef !important; color: #63368b !important;
+}
+
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge, .claim-status).evidence {
+  background: #fff0d9 !important; border-color: #e7b66c !important; color: #80521a !important;
+}
+
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).diserahkan,
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail, body) :is(.status, .badge).handed {
+  background: #eaf1ff !important; border-color: #c8d8fb !important; color: #244b91 !important;
+}
+
+/* Badge dalam sel tabel diratakan di tengah dan tidak melampaui lebar sel. */
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail) td:has(> :is(.status, .badge, .claim-status, .claim-status-badge, .claim-current-status, .kampus-detail-status)),
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail) td:has(> * :is(.status, .badge, .claim-status, .claim-status-badge, .claim-current-status, .kampus-detail-status)) {
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+:is(.admin-content, .sa-content, .satpam-content, .pelapor-page-surface, .dashboard-page, .satpam-dashboard, .public-detail) td :is(.status, .badge, .claim-status, .claim-status-badge, .claim-current-status, .kampus-detail-status) {
+  max-width: 100% !important;
+}

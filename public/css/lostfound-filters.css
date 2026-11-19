@@ -1,0 +1,56 @@
+/* Lost & Found - satu standar visual filter untuk seluruh peran dan halaman */
+form.lf-filter {
+    --lf-filter-accent: #7040a5;
+    --lf-filter-accent-hover: #5b3289;
+    --lf-filter-border: #d8cfe2;
+    --lf-filter-text: #30283a;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    align-items: flex-end !important;
+    gap: 14px !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    margin: 0 0 18px !important;
+    padding: 16px !important;
+    border: 1px solid #e7e0ef !important;
+    border-radius: 10px !important;
+    background: #fff !important;
+    box-shadow: 0 2px 8px rgba(35,22,49,.04) !important;
+}
+form.lf-filter *, form.lf-filter *::before, form.lf-filter *::after { box-sizing: border-box !important; }
+form.lf-filter .lf-filter__field { display: flex !important; flex: 1 0 160px !important; flex-direction: column !important; gap: 6px !important; min-width: 160px !important; width: auto !important; margin: 0 !important; padding: 0 !important; }
+form.lf-filter .lf-filter__field label { display: block !important; margin: 0 !important; color: #392451 !important; font-family: inherit !important; font-size: 13px !important; font-weight: 600 !important; line-height: 1.35 !important; }
+form.lf-filter .lf-filter__field input:not([type=hidden]), form.lf-filter .lf-filter__field select {
+    display: block !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+    height: 42px !important; min-height: 42px !important; margin: 0 !important; padding: 9px 12px !important;
+    border: 1px solid var(--lf-filter-border) !important; border-radius: 7px !important; background: #fff !important;
+    color: var(--lf-filter-text) !important; font-family: inherit !important; font-size: 13px !important; font-weight: 400 !important;
+    line-height: 1.3 !important; box-shadow: none !important; outline-offset: 1px !important;
+}
+form.lf-filter .lf-filter__field input:focus, form.lf-filter .lf-filter__field select:focus { outline: none !important; border-color: var(--lf-filter-accent) !important; box-shadow: 0 0 0 3px rgba(112,64,165,.12) !important; }
+form.lf-filter .lf-filter__actions { display: flex !important; flex: 0 0 auto !important; flex-flow: row nowrap !important; align-items: center !important; justify-content: flex-start !important; gap: 8px !important; min-width: max-content !important; margin: 0 !important; padding: 0 !important; }
+form.lf-filter .lf-filter__actions button[type=submit], form.lf-filter .lf-filter__actions a {
+    display: inline-flex !important; flex: 0 0 auto !important; align-items: center !important; justify-content: center !important;
+    width: auto !important; min-width: 104px !important; height: 42px !important; min-height: 42px !important; margin: 0 !important; padding: 9px 16px !important;
+    border: 1px solid var(--lf-filter-accent) !important; border-radius: 7px !important; background: var(--lf-filter-accent) !important;
+    color: #fff !important; font-family: inherit !important; font-size: 13px !important; font-weight: 600 !important; line-height: 1.2 !important;
+    text-align: center !important; text-decoration: none !important; white-space: nowrap !important; cursor: pointer !important;
+}
+form.lf-filter .lf-filter__actions button[type=submit]:hover, form.lf-filter .lf-filter__actions a:hover { background: var(--lf-filter-accent-hover) !important; border-color: var(--lf-filter-accent-hover) !important; }
+form.lf-filter .lf-filter__actions a { min-width: 88px !important; border-color: #e1d6ec !important; background: #f3eef8 !important; color: #392451 !important; }
+form.lf-filter .lf-filter__actions a.lf-filter__secondary { background: #fff !important; color: #5b3289 !important; border-color: #7040a5 !important; }
+form.lf-filter.lf-filter--compact { display: inline-flex !important; flex-flow: row nowrap !important; width: auto !important; max-width: 100% !important; overflow-x: auto !important; padding: 12px !important; margin-bottom: 14px !important; }
+form.lf-filter.lf-filter--compact .lf-filter__field { flex: 0 0 min(320px, 70vw) !important; min-width: 220px !important; }
+form.lf-filter.lf-filter--public { flex-flow: row nowrap !important; }
+@media (max-width: 900px) {
+    form.lf-filter { gap: 11px !important; }
+    form.lf-filter .lf-filter__field { flex-basis: 160px !important; }
+}
+@media (max-width: 600px) {
+    form.lf-filter, form.lf-filter.lf-filter--public { flex-flow: row nowrap !important; gap: 10px !important; padding: 12px !important; }
+    form.lf-filter .lf-filter__field { flex: 0 0 190px !important; min-width: 190px !important; }
+    form.lf-filter .lf-filter__actions { display: flex !important; flex-flow: row nowrap !important; width: auto !important; }
+    form.lf-filter .lf-filter__actions button[type=submit], form.lf-filter .lf-filter__actions a { width: auto !important; min-width: 88px !important; }
+}

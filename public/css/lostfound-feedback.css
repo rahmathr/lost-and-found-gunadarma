@@ -1,0 +1,62 @@
+/* Lost & Found Gunadarma — notifikasi ringkas dan konsisten */
+:root {
+  --lf-error-text:#9f2d35; --lf-error-bg:#fff5f5; --lf-error-border:#f1c9cc;
+  --lf-success-text:#27643a; --lf-success-bg:#f1faf3; --lf-success-border:#c8e5ce;
+  --lf-info-text:#49365e; --lf-info-bg:#f6f3fa; --lf-info-border:#ddd4ef;
+}
+/* Notifikasi global: selector mencakup kelas aktual yang ditemukan di Blade. */
+:is(.satpam-form-alert,.satpam-alert-error,.satpam-alert.satpam-alert-error,
+    .admin-content .alert,.admin-content .error,.satpam-content .alert,
+    .satpam-form-page .alert,.sa-alert-error,.sa-alert.sa-alert-error,
+    .alert-error,.alert.alert-error,.claim-alert.error,.claim-message.error,
+    .claim-detail .claim-message.error,.notice.error,.alert.error,
+    .pelapor-page-surface .alert-error,.pelapor-page-surface .alert.error) {
+  display:flex; align-items:flex-start; gap:8px; width:100%; min-width:0;
+  box-sizing:border-box; padding:8px 11px !important; margin:0 0 11px !important;
+  border:1px solid var(--lf-error-border) !important; border-radius:7px !important;
+  background:var(--lf-error-bg) !important; color:var(--lf-error-text) !important;
+  font-size:13px !important; font-weight:400; line-height:1.45 !important;
+  box-shadow:none !important; overflow-wrap:anywhere;
+}
+:is(.satpam-form-alert,.satpam-alert-error,.satpam-alert.satpam-alert-error,
+    .admin-content .alert,.admin-content .error,.satpam-content .alert,
+    .satpam-form-page .alert,.sa-alert-error,.sa-alert.sa-alert-error,
+    .alert-error,.alert.alert-error,.claim-alert.error,.claim-message.error,
+    .notice.error,.alert.error,.pelapor-page-surface .alert-error,
+    .pelapor-page-surface .alert.error)::before {
+  content:"!"; display:inline-flex; flex:0 0 17px; width:17px; height:17px;
+  align-items:center; justify-content:center; margin-top:1px; border-radius:50%;
+  background:#f8dfe1; color:#92252d; font-size:11px; font-weight:800; line-height:1;
+}
+/* Hilangkan judul generik agar notifikasi tidak membuang tinggi. */
+:is(.satpam-form-alert,.satpam-alert-error,.alert-error,.claim-alert.error) > strong:first-child {
+  display:none;
+}
+:is(.satpam-form-alert,.satpam-alert-error,.alert-error,.alert.error,
+    .claim-alert.error,.claim-message.error) ul {
+  display:block; min-width:0; margin:0 !important; padding:0 0 0 16px !important;
+}
+:is(.satpam-form-alert,.satpam-alert-error,.alert-error,.alert.error,
+    .claim-alert.error,.claim-message.error) li { margin:0 !important; padding:0; }
+:is(.satpam-form-alert,.satpam-alert-error,.alert-error,.alert.error,
+    .claim-alert.error,.claim-message.error) li + li { margin-top:2px !important; }
+/* Pesan validasi di bawah kolom input. */
+:is(.field-error,.input-error,.sa-error,.satpam-form-error,.admin-content .field-error,
+    .pelapor-page-surface .field-error) {
+  display:block; margin:4px 0 0 !important; color:#a12d35 !important;
+  font-size:12px !important; line-height:1.4 !important; overflow-wrap:anywhere;
+}
+/* Notifikasi berhasil dan informasi menggunakan ukuran yang sama. */
+:is(.alert-success,.notice.success,.sa-alert:not(.sa-alert-error),
+    .pelapor-page-surface .alert-success,.pelapor-page-surface .success) {
+  box-sizing:border-box; padding:8px 11px !important; margin:0 0 11px !important;
+  border-radius:7px !important; font-size:13px !important; line-height:1.45 !important;
+}
+@media(max-width:600px) {
+  :is(.satpam-form-alert,.satpam-alert-error,.satpam-alert.satpam-alert-error,
+      .admin-content .alert,.admin-content .error,.satpam-content .alert,
+      .sa-alert-error,.alert-error,.alert.error,.claim-alert.error,
+      .claim-message.error,.notice.error,.pelapor-page-surface .alert-error) {
+    padding:7px 9px !important; font-size:12px !important;
+  }
+}

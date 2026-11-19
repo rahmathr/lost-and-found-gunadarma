@@ -1,0 +1,26 @@
+/* Ikon navigasi sidebar Lost & Found — hanya memengaruhi tautan di sidebar. */
+.sa-nav a, .admin-nav a, .satpam-nav a, .pelapor-nav a,
+.sa-sidebar .sidebar-logout button, .admin-sidebar .sidebar-logout button,
+.satpam-sidebar .sidebar-logout button, .pelapor-sidebar .sidebar-logout button {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-width: 0 !important;
+}
+.lf-sidebar-icon {
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    flex: 0 0 18px !important;
+    color: currentColor !important;
+    vertical-align: middle !important;
+}
+.sa-nav a, .admin-nav a, .satpam-nav a, .pelapor-nav a,
+.sa-sidebar .sidebar-logout button, .admin-sidebar .sidebar-logout button,
+.satpam-sidebar .sidebar-logout button, .pelapor-sidebar .sidebar-logout button {
+    text-align: left !important;
+}
+@media (max-width: 760px) {
+    .lf-sidebar-icon { width: 17px !important; height: 17px !important; min-width: 17px !important; flex-basis: 17px !important; }
+}
