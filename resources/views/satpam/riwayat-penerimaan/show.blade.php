@@ -15,7 +15,7 @@
 @if($barangTemuan->foto && $barangTemuan->foto->isNotEmpty())
     <section class="photo-list">
         @foreach($barangTemuan->foto as $foto)
-            <img src="{{ asset('storage/'.$foto->path_foto) }}" alt="Foto {{ $barangTemuan->nama_publik }}">
+            <img src="{{ app(\App\Services\FileStorageService::class)->url($foto->path_foto) }}" alt="Foto {{ $barangTemuan->nama_publik }}">
         @endforeach
     </section>
 @else

@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AdminKampus;
 use App\Models\LaporanKehilangan;
+use App\Services\FileStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
 
 class LaporanAdminController extends Controller
 {
+    public function __construct(private FileStorageService $fileStorage)
+    {
+    }
+
     private function adminLogin(Request $request)
     {
         $auth = $request->session()->get('auth');
@@ -101,9 +105,9 @@ class LaporanAdminController extends Controller
     {
         $laporan = $this->laporanKampus($request, $id);
         $gambar = $laporan->foto()->where('id_foto_laporan', $foto)->firstOrFail();
-        abort_unless(Storage::disk('local')->exists($gambar->path_foto), 404);
+        abort_unless($this->fileStorage->exists($gambar->path_foto, 'private'), 404);
 
-        return Storage::disk('local')->response($gambar->path_foto);
+        return $this->fileStorage->response($gambar->path_foto, 'private');
     }
 
     public function update(Request $request, $id)

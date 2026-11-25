@@ -493,7 +493,7 @@
 
                 <div class="barang-image">
                     @if($item->foto->isNotEmpty())
-                        <img src="{{ asset('storage/'.$item->foto->first()->path_foto) }}" alt="Foto {{ $item->nama_publik }}" style="width:100%;height:100%;object-fit:cover;">
+                        <img src="{{ app(\App\Services\FileStorageService::class)->url($item->foto->first()->path_foto) }}" alt="Foto {{ $item->nama_publik }}" style="width:100%;height:100%;object-fit:cover;">
                     @else
                         <span>Foto belum tersedia</span>
                     @endif

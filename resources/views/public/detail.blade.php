@@ -444,7 +444,7 @@
 
         <div class="main-photo" style="overflow:hidden;">
             @if($barang->foto->isNotEmpty())
-                <img src="{{ asset('storage/'.$barang->foto->first()->path_foto) }}" alt="Foto {{ $barang->nama_publik }}" style="width:100%;height:100%;object-fit:contain;background:#f3f0f7;">
+                <img src="{{ app(\App\Services\FileStorageService::class)->url($barang->foto->first()->path_foto) }}" alt="Foto {{ $barang->nama_publik }}" style="width:100%;height:100%;object-fit:contain;background:#f3f0f7;">
             @else
                 Foto belum tersedia
             @endif
@@ -454,7 +454,7 @@
             <div class="thumbnail-grid">
                 @foreach($barang->foto->skip(1) as $foto)
                     <div class="thumbnail" style="overflow:hidden;">
-                        <img src="{{ asset('storage/'.$foto->path_foto) }}" alt="Foto tambahan {{ $barang->nama_publik }}" style="width:100%;height:100%;object-fit:cover;">
+                        <img src="{{ app(\App\Services\FileStorageService::class)->url($foto->path_foto) }}" alt="Foto tambahan {{ $barang->nama_publik }}" style="width:100%;height:100%;object-fit:cover;">
                     </div>
                 @endforeach
             </div>

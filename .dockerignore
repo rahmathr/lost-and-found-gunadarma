@@ -1,0 +1,38 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+auth.json
+
+# Version control and local tooling
+.git
+.github
+.codex
+.cursor
+.idea
+.vscode
+AGENTS.md
+CLAUDE.md
+
+# Dependencies are installed inside the image
+/vendor
+/node_modules
+
+# Build output is generated in the frontend build stage
+/public/build
+/public/hot
+
+# Local runtime files and databases
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/database/*.sqlite
+/backup*.sql
+*.sql
+*.zip
+.phpunit.result.cache
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

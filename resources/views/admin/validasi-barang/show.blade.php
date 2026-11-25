@@ -276,7 +276,7 @@
                                         @foreach ($barangTemuan->foto as $foto)
                                             <div style="border:1px solid #ddd;border-radius:8px;padding:8px;background:#fff;">
                                                 <img
-                                                    src="{{ asset('storage/' . $foto->path_foto) }}"
+                                                    src="{{ app(\App\Services\FileStorageService::class)->url($foto->path_foto) }}"
                                                     alt="Foto {{ $barangTemuan->nama_publik }}"
                                                     style="display:block;width:100%;height:140px;object-fit:cover;border-radius:5px;">
                                                 @if ($foto->is_utama)

@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\AdminKampus;
 use App\Models\BarangDitemukan;
 use App\Models\Klaim;
+use App\Services\FileStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ManajemenKlaimController extends Controller
 {
+    public function __construct(private FileStorageService $fileStorage)
+    {
+    }
+
     private function adminLogin(Request $request)
     {
         $auth = $request->session()->get('auth');
@@ -73,9 +77,9 @@ class ManajemenKlaimController extends Controller
         $klaim = $this->cariKlaim($request, $id);
 
         abort_unless($klaim->bukti_tambahan, 404);
-        abort_unless(Storage::disk('local')->exists($klaim->bukti_tambahan), 404);
+        abort_unless($this->fileStorage->exists($klaim->bukti_tambahan, 'private'), 404);
 
-        return Storage::disk('local')->download($klaim->bukti_tambahan);
+        return $this->fileStorage->download($klaim->bukti_tambahan, 'private');
     }
 
     /**

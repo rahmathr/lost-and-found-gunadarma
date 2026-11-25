@@ -94,7 +94,7 @@
                         @endphp
                         @if ($fotoUtama)
                             <img
-                                src="{{ asset('storage/' . $fotoUtama->path_foto) }}"
+                                src="{{ app(\App\Services\FileStorageService::class)->url($fotoUtama->path_foto) }}"
                                 alt="Foto {{ $barangTemuan->nama_publik }}"
                                 style="width:100%;height:100%;max-height:220px;object-fit:contain;border-radius:8px;"
                             >

@@ -88,7 +88,7 @@
         <div>
             @foreach($barangTemuan->foto as $fotoLama)
                 <div>
-                    <img src="{{ asset('storage/'.$fotoLama->path_foto) }}" alt="Foto barang">
+                    <img src="{{ app(\App\Services\FileStorageService::class)->url($fotoLama->path_foto) }}" alt="Foto barang">
                     @if($fotoLama->is_utama)<small>Foto utama</small>@endif
                     <button type="submit" form="foto-utama-barang-{{ $fotoLama->id_foto }}">Jadikan utama</button>
                     <button type="submit" form="hapus-foto-barang-{{ $fotoLama->id_foto }}" class="btn-delete" onclick="return confirm('Hapus foto ini saja? Data barang tidak akan dihapus.')">Hapus Foto</button>

@@ -113,7 +113,7 @@
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;">
             @foreach($barangTemuan->foto as $fotoLama)
                 <div style="width:110px;display:flex;flex-direction:column;align-items:stretch;gap:7px;">
-                    <img src="{{ asset('storage/'.$fotoLama->path_foto) }}" alt="Foto barang" style="width:110px;height:85px;object-fit:cover;border-radius:6px;border:1px solid #ddd;">
+                    <img src="{{ app(\App\Services\FileStorageService::class)->url($fotoLama->path_foto) }}" alt="Foto barang" style="width:110px;height:85px;object-fit:cover;border-radius:6px;border:1px solid #ddd;">
                     @if($fotoLama->is_utama)<small>Foto utama</small>@endif
                     <button type="submit" form="foto-utama-{{ $fotoLama->id_foto }}">Jadikan utama</button>
                     <button type="submit" form="hapus-foto-barang-{{ $fotoLama->id_foto }}" class="btn-delete" onclick="return confirm('Hapus foto ini saja? Data barang tidak akan dihapus.')">Hapus Foto</button>

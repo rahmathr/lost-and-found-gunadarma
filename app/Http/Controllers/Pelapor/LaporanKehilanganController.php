@@ -6,12 +6,37 @@ use App\Http\Controllers\Controller;
 use App\Models\Kampus;
 use App\Models\Klaim;
 use App\Models\LaporanKehilangan;
+use App\Services\FileStorageService;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class LaporanKehilanganController extends Controller
 {
+    public function __construct(private FileStorageService $fileStorage)
+    {
+    }
+
+    private function hapusFilePrivat(string $path): void
+    {
+        try {
+            if (!$this->fileStorage->delete($path, 'private')) {
+                report(new \RuntimeException("Gagal menghapus file privat: {$path}"));
+            }
+        } catch (Throwable $exception) {
+            report($exception);
+        }
+    }
+
+    private function bersihkanFilePrivat(array $paths): void
+    {
+        foreach ($paths as $path) {
+            if (is_string($path) && $path !== '') {
+                $this->hapusFilePrivat($path);
+            }
+        }
+    }
     /**
      * Mengambil ID Pelapor yang sedang login.
      */
@@ -145,17 +170,26 @@ class LaporanKehilanganController extends Controller
             'foto.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
-        $laporan = LaporanKehilangan::create([
-            'id_kampus' => $validated['id_kampus'],
-            'id_pelapor' => $idPelapor,
-            'nama_barang' => $validated['nama_barang'],
-            'deskripsi' => $validated['deskripsi'],
-            'tanggal_hilang' => $validated['tanggal_hilang'],
-            'lokasi_hilang' => $validated['lokasi_hilang'],
-            'status' => 'Diajukan',
-        ]);
+        $uploadedPaths = [];
 
-        $this->simpanFoto($request, $laporan);
+        try {
+            DB::transaction(function () use ($validated, $idPelapor, $request, &$uploadedPaths) {
+                $laporan = LaporanKehilangan::create([
+                    'id_kampus' => $validated['id_kampus'],
+                    'id_pelapor' => $idPelapor,
+                    'nama_barang' => $validated['nama_barang'],
+                    'deskripsi' => $validated['deskripsi'],
+                    'tanggal_hilang' => $validated['tanggal_hilang'],
+                    'lokasi_hilang' => $validated['lokasi_hilang'],
+                    'status' => 'Diajukan',
+                ]);
+
+                $this->simpanFoto($request, $laporan, $uploadedPaths);
+            });
+        } catch (Throwable $exception) {
+            $this->bersihkanFilePrivat($uploadedPaths);
+            throw $exception;
+        }
 
         return redirect()
             ->route('pelapor.laporan-kehilangan.index')
@@ -230,27 +264,51 @@ class LaporanKehilanganController extends Controller
             return back()->withInput()->withErrors(['foto' => 'Maksimal 4 foto untuk setiap laporan.']);
         }
 
-        $laporan->update([
-            'id_kampus' => $validated['id_kampus'],
-            'nama_barang' => $validated['nama_barang'],
-            'deskripsi' => $validated['deskripsi'],
-            'tanggal_hilang' => $validated['tanggal_hilang'],
-            'lokasi_hilang' => $validated['lokasi_hilang'],
-        ]);
+        $uploadedPaths = [];
 
-        $this->simpanFoto($request, $laporan);
+        try {
+            DB::transaction(function () use ($laporan, $validated, $request, &$uploadedPaths) {
+                $laporan->update([
+                    'id_kampus' => $validated['id_kampus'],
+                    'nama_barang' => $validated['nama_barang'],
+                    'deskripsi' => $validated['deskripsi'],
+                    'tanggal_hilang' => $validated['tanggal_hilang'],
+                    'lokasi_hilang' => $validated['lokasi_hilang'],
+                ]);
+
+                $this->simpanFoto($request, $laporan, $uploadedPaths);
+            });
+        } catch (Throwable $exception) {
+            $this->bersihkanFilePrivat($uploadedPaths);
+            throw $exception;
+        }
 
         return redirect()
             ->route('pelapor.laporan-kehilangan.index')
             ->with('success', 'Laporan kehilangan berhasil diperbarui.');
     }
 
-    /** Simpan foto laporan pada disk privat (bukan public/storage). */
-    private function simpanFoto(Request $request, LaporanKehilangan $laporan): void
-    {
+    /** Simpan foto laporan secara privat dan catat path untuk kompensasi jika transaksi gagal. */
+    private function simpanFoto(
+        Request $request,
+        LaporanKehilangan $laporan,
+        array &$uploadedPaths
+    ): void {
         $urutan = $laporan->foto()->count() + 1;
+
         foreach ($request->file('foto', []) as $file) {
-            $path = $file->store('foto-laporan-kehilangan/' . $laporan->id_laporan, 'local');
+            $path = $this->fileStorage->store(
+                $file,
+                'foto-laporan-kehilangan/' . $laporan->id_laporan,
+                'private'
+            );
+
+            if ($path === false) {
+                throw new \RuntimeException('Foto laporan gagal disimpan.');
+            }
+
+            $uploadedPaths[] = $path;
+
             $laporan->foto()->create([
                 'path_foto' => $path,
                 'urutan' => $urutan++,
@@ -263,10 +321,17 @@ class LaporanKehilanganController extends Controller
     {
         $laporan = $this->cariLaporan($request, $id);
         abort_unless($laporan->status === 'Diajukan', 403, 'Laporan yang sudah diproses tidak dapat diubah.');
-        $gambar = $laporan->foto()->where('id_foto_laporan', $foto)->firstOrFail();
+
+        $gambar = $laporan->foto()
+            ->where('id_foto_laporan', $foto)
+            ->firstOrFail();
         $path = $gambar->path_foto;
-        $gambar->delete();
-        Storage::disk('local')->delete($path);
+
+        DB::transaction(function () use ($gambar) {
+            $gambar->delete();
+        });
+
+        $this->hapusFilePrivat($path);
 
         return back()->with('success', 'Foto laporan berhasil dihapus.');
     }
@@ -275,10 +340,13 @@ class LaporanKehilanganController extends Controller
     public function lihatFoto(Request $request, $id, $foto)
     {
         $laporan = $this->cariLaporan($request, $id);
-        $gambar = $laporan->foto()->where('id_foto_laporan', $foto)->firstOrFail();
-        abort_unless(Storage::disk('local')->exists($gambar->path_foto), 404);
+        $gambar = $laporan->foto()
+            ->where('id_foto_laporan', $foto)
+            ->firstOrFail();
 
-        return Storage::disk('local')->response($gambar->path_foto);
+        abort_unless($this->fileStorage->exists($gambar->path_foto, 'private'), 404);
+
+        return $this->fileStorage->response($gambar->path_foto, 'private');
     }
 
     /**
@@ -296,8 +364,17 @@ class LaporanKehilanganController extends Controller
 
         try {
             $pathsFoto = $laporan->foto()->pluck('path_foto')->all();
-            $laporan->delete();
-            Storage::disk('local')->delete($pathsFoto);
+            $berhasilDihapus = DB::transaction(function () use ($laporan) {
+                return $laporan->delete();
+            });
+
+            if (!$berhasilDihapus) {
+                return redirect()
+                    ->route('pelapor.laporan-kehilangan.index')
+                    ->with('error', 'Laporan tidak dapat dihapus.');
+            }
+
+            $this->bersihkanFilePrivat($pathsFoto);
 
             return redirect()
                 ->route('pelapor.laporan-kehilangan.index')

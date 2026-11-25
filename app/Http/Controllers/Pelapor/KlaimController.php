@@ -5,11 +5,18 @@ namespace App\Http\Controllers\Pelapor;
 use App\Http\Controllers\Controller;
 use App\Models\BarangDitemukan;
 use App\Models\Klaim;
+use App\Services\FileStorageService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use RuntimeException;
+use Throwable;
 
 class KlaimController extends Controller
 {
+    public function __construct(private FileStorageService $fileStorage)
+    {
+    }
+
     private function idPelapor(Request $request)
     {
         $auth = $request->session()->get('auth');
@@ -148,26 +155,105 @@ class KlaimController extends Controller
             );
         }
 
-        if ($klaim->bukti_tambahan) {
-            Storage::disk('local')->delete($klaim->bukti_tambahan);
-        }
+        // Simpan file baru ke penyimpanan privat.
+        $pathBaru = $this->fileStorage->store(
+            $validated['bukti_tambahan'],
+            'bukti-klaim',
+            'private'
+        );
 
-        $path = $validated['bukti_tambahan']->store('bukti-klaim', 'local');
-
-        if (!$path) {
+        if ($pathBaru === false) {
             return back()->with(
                 'error',
                 'File gagal disimpan. Silakan coba kembali.'
             );
         }
 
-        $klaim->update([
-            'bukti_tambahan' => $path,
-            'status' => 'Menunggu Verifikasi',
-        ]);
+        try {
+            $hasil = DB::transaction(function () use (
+                $id,
+                $idPelapor,
+                $pathBaru
+            ) {
+                // Kunci baris klaim agar tidak diperbarui bersamaan.
+                $klaimTerkunci = Klaim::where('id_klaim', $id)
+                    ->where('id_pelapor', $idPelapor)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                // Periksa kembali status setelah mendapatkan kunci.
+                if ($klaimTerkunci->status !== 'Perlu Bukti Tambahan') {
+                    return [
+                        'berhasil' => false,
+                        'path_lama' => null,
+                        'id_barang' => $klaimTerkunci->id_barang,
+                    ];
+                }
+
+                $pathLama = $klaimTerkunci->bukti_tambahan;
+
+                $berhasilUpdate = $klaimTerkunci->update([
+                    'bukti_tambahan' => $pathBaru,
+                    'status' => 'Menunggu Verifikasi',
+                ]);
+
+                if (!$berhasilUpdate) {
+                    throw new RuntimeException(
+                        'Database gagal memperbarui bukti tambahan klaim.'
+                    );
+                }
+
+                return [
+                    'berhasil' => true,
+                    'path_lama' => $pathLama,
+                    'id_barang' => $klaimTerkunci->id_barang,
+                ];
+            });
+        } catch (Throwable $exception) {
+            // Bersihkan file baru jika transaksi database gagal.
+            try {
+                $this->fileStorage->delete($pathBaru, 'private');
+            } catch (Throwable $cleanupException) {
+                report($cleanupException);
+            }
+
+            throw $exception;
+        }
+
+        // Status klaim mungkin berubah sebelum transaksi mendapatkan kunci.
+        if (!$hasil['berhasil']) {
+            try {
+                $this->fileStorage->delete($pathBaru, 'private');
+            } catch (Throwable $cleanupException) {
+                report($cleanupException);
+            }
+
+            return back()->with(
+                'error',
+                'Klaim ini tidak sedang menunggu bukti tambahan.'
+            );
+        }
+
+        // Hapus bukti lama hanya setelah database berhasil diperbarui.
+        if ($hasil['path_lama']) {
+            try {
+                $berhasilHapus = $this->fileStorage->delete(
+                    $hasil['path_lama'],
+                    'private'
+                );
+
+                if (!$berhasilHapus) {
+                    report(new RuntimeException(
+                        "Gagal menghapus bukti klaim lama: {$hasil['path_lama']}"
+                    ));
+                }
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        }
 
         return redirect()
-            ->route('pelapor.klaim.show', $klaim->id_barang)
+            ->route('pelapor.klaim.show', $hasil['id_barang'])
             ->with(
                 'success',
                 'Bukti tambahan berhasil dikirim. Klaim menunggu pemeriksaan Admin Kampus.'
