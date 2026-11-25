@@ -1,4 +1,5 @@
-# Build frontend assets with Node.js 22 (required by Vite 8).
+
+# Build frontend assets with Node.js 22
 FROM node:22-bookworm-slim AS frontend
 
 WORKDIR /app
@@ -10,10 +11,11 @@ COPY . .
 RUN npm run build
 
 
-# Install PHP dependencies and run Laravel on Apache.
+# PHP 8.5 + Apache
 FROM php:8.5-apache-bookworm AS app
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV PORT=3000
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git \
@@ -31,7 +33,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gd \
         intl \
         mbstring \
-        opcache \
         pdo_pgsql \
         zip \
     && a2enmod rewrite headers \
@@ -42,8 +43,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Install production PHP dependencies without running Laravel migrations.
+# Install production dependencies without running migrations
 COPY composer.json composer.lock ./
+
 RUN composer install \
     --no-dev \
     --prefer-dist \
@@ -52,11 +54,11 @@ RUN composer install \
     --optimize-autoloader \
     --no-scripts
 
-# Copy application source and the compiled Vite assets.
+# Copy application source and frontend assets
 COPY . .
 COPY --from=frontend /app/public/build ./public/build
 
-# Complete Composer autoloading and Laravel package discovery.
+# Composer autoload and Laravel package discovery
 RUN composer dump-autoload --no-dev --optimize --no-scripts \
     && php artisan package:discover --ansi \
     && mkdir -p \
@@ -69,9 +71,10 @@ RUN composer dump-autoload --no-dev --optimize --no-scripts \
 
 COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-EXPOSE 80
+EXPOSE 3000
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
