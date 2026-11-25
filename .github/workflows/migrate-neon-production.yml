@@ -1,0 +1,54 @@
+name: Migrate Neon Production
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: neon-production-migrations
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: Run Laravel migrations on Neon production
+    if: github.ref == 'refs/heads/deploy-demo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout deploy-demo
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo_pgsql, pgsql, zip, bcmath, intl, fileinfo
+          coverage: none
+          tools: composer:v2
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --no-dev --optimize-autoloader
+
+      - name: Verify required secrets
+        env:
+          DB_URL: ${{ secrets.NEON_PRODUCTION_DATABASE_URL }}
+          APP_KEY: ${{ secrets.APP_KEY_PRODUCTION }}
+        run: |
+          test -n "$DB_URL" || { echo "Secret NEON_PRODUCTION_DATABASE_URL belum diatur."; exit 1; }
+          test -n "$APP_KEY" || { echo "Secret APP_KEY_PRODUCTION belum diatur."; exit 1; }
+
+      - name: Run database migrations
+        env:
+          APP_ENV: production
+          APP_KEY: ${{ secrets.APP_KEY_PRODUCTION }}
+          APP_DEBUG: 'false'
+          DB_CONNECTION: pgsql
+          DB_URL: ${{ secrets.NEON_PRODUCTION_DATABASE_URL }}
+          DB_SSLMODE: require
+          CACHE_STORE: file
+          SESSION_DRIVER: file
+          QUEUE_CONNECTION: sync
+        run: php artisan migrate --force
