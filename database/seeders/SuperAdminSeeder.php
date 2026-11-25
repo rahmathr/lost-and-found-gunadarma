@@ -10,7 +10,7 @@ class SuperAdminSeeder extends Seeder
 {
     public function run(): void
     {
-        $password = config('demo.account_password');
+        $password = config('demo.super_admin_password');
 
         if (empty($password)) {
             return;

@@ -10,17 +10,17 @@ class SatpamSeeder extends Seeder
 {
     public function run(): void
     {
-        $password = config('demo.account_password');
+        $password = config('demo.satpam_password');
 
         if (empty($password)) {
             return;
         }
 
         Satpam::firstOrCreate(
-            ['email' => 'satpam@gunadarma.ac.id'],
+            ['email' => 'satpam.demo@gunadarma.ac.id'],
             [
                 'id_kampus' => 1,
-                'nama' => 'Satpam Gunadarma',
+                'nama' => 'Satpam Demo',
                 'password_hash' => Hash::make($password),
             ]
         );
