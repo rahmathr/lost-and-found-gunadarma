@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
+use App\Services\FileStorageService;
 use Throwable;
 
 class ResetTotalAplikasi extends Command
@@ -68,12 +68,12 @@ class ResetTotalAplikasi extends Command
                 return self::FAILURE;
             }
 
-            // Disk public berakar di storage/app/public.
-            Storage::disk('public')->deleteDirectory('foto-barang');
-
-            // Disk local pada konfigurasi proyek berakar di storage/app/private.
-            Storage::disk('local')->deleteDirectory('foto-laporan-kehilangan');
-            Storage::disk('local')->deleteDirectory('bukti-klaim');
+            // Bersihkan folder lama di lokal dan prefix R2 terkait.
+            // Hanya berjalan setelah seluruh konfirmasi reset di atas berhasil.
+            $fileStorage = app(FileStorageService::class);
+            $fileStorage->deleteDirectoryForReset('foto-barang', 'public');
+            $fileStorage->deleteDirectoryForReset('foto-laporan-kehilangan', 'private');
+            $fileStorage->deleteDirectoryForReset('bukti-klaim', 'private');
 
             $this->newLine();
             $this->info('Reset selesai. Database sudah dibuat ulang dan folder unggahan terkait sudah dibersihkan.');
